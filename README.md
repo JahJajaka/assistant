@@ -7,8 +7,9 @@ This is not a game like experience in the virtual world (Replica)
 This is not just a chat engine as tons of existing apps
 Possible integrations.
  1.  Create reminders based on emails and calendar events, location or sensor data.
- 2. Build recommendations based on static and dynamic data: events around, sales and deals
- Overal behavior of an assistant should be defined in static memory. With major introspective questions:
+ 2. Build recommendations based on static and dynamic data: events around, sales and deals.
+  
+   Overal behavior of an assistant should be defined in static memory. With major introspective questions:
 Can I help a human, based on my knowledge about him + latest incoming information?
 If answer is yes, then it should act.
 If answer is no, then it should decide: to store incoming information for further processing when more data coming, or make an internal conclusion and store it in static memory.
