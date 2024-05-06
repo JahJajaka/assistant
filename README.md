@@ -48,3 +48,6 @@ Save thoughts into dynamic storage.
 Send message to user if needed. 
 Save conversation history.
 Update static personality data if needed.
+
+
+Miro board: https://miro.com/app/board/uXjVKLxkLAU=/
