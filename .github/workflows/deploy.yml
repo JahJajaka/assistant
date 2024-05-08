@@ -13,12 +13,12 @@ jobs:
                     echo "${{ secrets.SSH_KEY }}" > ~/.ssh/key
                     chmod 600 ~/.ssh/key
                     cat >> ~/.ssh/config <<END
-                    Host ${{ secrets.HOST }}
+                    Host n1.13dagger.com
                         User me
                         IdentityFile ~/.ssh/key
                         StrictHostKeyChecking=no
                     END
             -   name: git pull
-                run: ssh ${{ secrets.HOST }} 'cd ${{ vars.DEPLOY_DIR }}; git pull'
+                run: ssh n1.13dagger.com 'cd ${{ vars.DEPLOY_DIR }}; git pull'
             -   name: compose restart
-                run: ssh ${{ secrets.HOST }} 'cd ${{ vars.DEPLOY_DIR }}; docker-compose restart'
+                run: ssh n1.13dagger.com 'cd ${{ vars.DEPLOY_DIR }}; docker-compose restart'
