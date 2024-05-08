@@ -1,0 +1,24 @@
+name: Deploy
+run-name: Deploy on server initiated by ${{ github.actor }}
+on:
+  [ push, pull_request ]
+jobs:
+    build-bundle-and-upload:
+        runs-on: ubuntu-latest
+        if: github.ref == 'refs/heads/main'
+        steps:
+            -   name: Setup ssh
+                run: |
+                    mkdir -p ~/.ssh/
+                    echo "${{ secrets.SSH_KEY }}" > ~/.ssh/key
+                    chmod 600 ~/.ssh/key
+                    cat >> ~/.ssh/config <<END
+                    Host ${{ secrets.HOST }}
+                        User me
+                        IdentityFile ~/.ssh/key
+                        StrictHostKeyChecking=no
+                    END
+            -   name: git pull
+                run: ssh ${{ secrets.HOST }} 'cd ${{ vars.DEPLOY_DIR }}; git pull'
+            -   name: compose restart
+                run: ssh ${{ secrets.HOST }} 'cd ${{ vars.DEPLOY_DIR }}; docker-compose restart'
