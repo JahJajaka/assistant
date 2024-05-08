@@ -51,3 +51,6 @@ Update static personality data if needed.
 
 
 Miro board: https://miro.com/app/board/uXjVKLxkLAU=/
+
+
+deployed at n1.13dagger.com:8765
