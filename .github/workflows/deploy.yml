@@ -20,5 +20,9 @@ jobs:
                     END
             -   name: git pull
                 run: ssh n1.13dagger.com 'cd ${{ vars.DEPLOY_DIR }}; git pull'
+            -   name: build
+                run: ssh n1.13dagger.com 'cd ${{ vars.DEPLOY_DIR }}; docker-compose -f docker-compose-prod.yml build'
             -   name: compose restart
-                run: ssh n1.13dagger.com 'cd ${{ vars.DEPLOY_DIR }}; docker-compose restart'
+                run: ssh n1.13dagger.com 'cd ${{ vars.DEPLOY_DIR }}; docker-compose -f docker-compose-prod.yml down; docker-compose -f docker-compose-prod.yml up -d'
+            -   name: run migrations
+                run: ssh n1.13dagger.com 'cd ${{ vars.DEPLOY_DIR }}; docker-compose -f docker-compose-prod.yml run app poetry run alembic upgrade head'
