@@ -1,7 +1,15 @@
-FROM tiangolo/uvicorn-gunicorn-fastapi:python3.11
+FROM python:3.11-slim
 
-COPY ./app /app
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
 
-RUN pip install SQLAlchemy asyncpg
+WORKDIR /app
 
-EXPOSE 8000
+COPY pyproject.toml poetry.lock /app/
+
+RUN pip install poetry
+RUN poetry install --no-root --no-interaction
+
+COPY app /app/app
+
+CMD ["poetry", "run", "fastapi", "run", "app/main.py", "--proxy-headers", "--port", "80"]

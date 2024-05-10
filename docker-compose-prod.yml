@@ -6,17 +6,13 @@ services:
       context: .
       dockerfile: docker/Dockerfile
     ports:
-      - "80:80"
+      - "8765:80"
     depends_on:
       - db
     environment:
       - DATABASE_URL=postgresql://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:5432/${DB_NAME}
-      - DEBUG=1
     env_file:
       - .env
-    volumes:
-      - ./:/app
-    command: poetry run uvicorn app.main:app --host 0.0.0.0 --port 80 --reload
 
   db:
     image: postgres:latest
