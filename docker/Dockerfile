@@ -5,7 +5,7 @@ ENV PYTHONUNBUFFERED=1
 
 WORKDIR /app
 
-COPY pyproject.toml poetry.lock /app/
+COPY pyproject.toml poetry.lock alembic.ini /app/
 
 RUN pip install poetry
 RUN poetry install --no-root --no-interaction
