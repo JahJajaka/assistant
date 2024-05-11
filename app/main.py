@@ -1,14 +1,21 @@
 from fastapi import FastAPI, HTTPException, status, Depends
+from pydantic import BaseModel
+from langchain_core.prompts import PromptTemplate
+
 from app import config
-from app.routes import users
+#from app.routes import users
 from app.db import database
 from app.db.models import User, Persona, Event, Tag, Base
-from app.db.schemas import  UserCreate, User as PyUser, PersonaCreate, Persona as PyPersona, EventCreate, Event as PyEvent, TagCreate, Tag as PyTag  
+from app.db.schemas import UserCreate, User as PyUser, PersonaCreate, Persona as PyPersona, EventCreate, \
+    Event as PyEvent, TagCreate, Tag as PyTag
 
 from sqlalchemy.orm import Session
+
+from app.llm.llm import get_model
+
 Base.metadata.create_all(bind=database.engine)
 app = FastAPI(debug=config.IS_DEBUG)
-app.include_router(users.router)
+#app.include_router(users.router)
 
 def get_db():
     db_ = database.SessionLocal()
@@ -81,3 +88,14 @@ def read_tag(tag_id: int, db: Session = Depends(get_db)):
     if db_tag is None:
         raise HTTPException(status_code=404, detail="Tag not found")
     return db_tag
+
+
+class LlmRequest(BaseModel):
+    prompt: str
+
+@app.post("/llm")
+def llm(request: LlmRequest):
+    prompt = PromptTemplate.from_template("Tell me a joke about {topic}")
+    chain = prompt | get_model()
+    result = chain.invoke({"topic": request.prompt})
+    return {"message": result}
