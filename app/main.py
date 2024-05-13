@@ -3,7 +3,7 @@ from pydantic import BaseModel
 from langchain_core.prompts import PromptTemplate
 
 from app import config
-#from app.routes import users
+from app.routes import users
 from app.db import database
 from app.db.models import User, Persona, Event, Tag, Base
 from app.db.schemas import UserCreate, User as PyUser, PersonaCreate, Persona as PyPersona, EventCreate, \
@@ -15,7 +15,7 @@ from app.llm.llm import get_model
 
 Base.metadata.create_all(bind=database.engine)
 app = FastAPI(debug=config.IS_DEBUG)
-#app.include_router(users.router)
+app.include_router(users.router)
 
 def get_db():
     db_ = database.SessionLocal()
