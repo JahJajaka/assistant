@@ -12,6 +12,7 @@ services:
     environment:
       - DATABASE_URL=postgresql://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_NAME}
       - DEBUG=1
+      - OPENAI_KEY = ${OPENAI_KEY}
     env_file:
       - .env
     volumes:

@@ -19,6 +19,7 @@ langchain = "^0.1.20"
 langchain-cohere = "^0.1.4"
 langchain-community = "^0.0.38"
 langchain-core = "^0.1.52"
+langchain-openai = "^0.1.7"
 
 
 [build-system]

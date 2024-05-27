@@ -1,6 +1,6 @@
 from fastapi import FastAPI, HTTPException, status, Depends
-from pydantic import BaseModel
-from langchain_core.prompts import PromptTemplate
+
+from langchain_core.prompts import PromptTemplate 
 
 from app import config
 from app.routes import users
@@ -10,8 +10,8 @@ from app.db.schemas import UserCreate, User as PyUser, PersonaCreate, Persona as
     Event as PyEvent, TagCreate, Tag as PyTag
 
 from sqlalchemy.orm import Session
-
-from app.llm.llm import get_model
+from app.llm.LlmRequest import LlmRequest
+from app.llm.llm import get_model, get_openai_model
 
 Base.metadata.create_all(bind=database.engine)
 app = FastAPI(debug=config.IS_DEBUG)
@@ -90,12 +90,10 @@ def read_tag(tag_id: int, db: Session = Depends(get_db)):
     return db_tag
 
 
-class LlmRequest(BaseModel):
-    prompt: str
 
 @app.post("/llm")
 def llm(request: LlmRequest):
-    prompt = PromptTemplate.from_template("Tell me a joke about {topic}")
-    chain = prompt | get_model()
-    result = chain.invoke({"topic": request.prompt})
-    return {"message": result}
+    prompt = PromptTemplate.from_template(request.prompt)
+    chain = prompt | get_openai_model()
+    result = chain.invoke({"event": request.event})
+    return {"message": result, "event": request.event, "prompt": request.prompt}
