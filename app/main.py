@@ -1,7 +1,7 @@
 from fastapi import FastAPI, HTTPException, status, Depends
 
 from langchain_core.prompts import PromptTemplate 
-
+import os
 from app import config
 from app.routes import users
 from app.db import database
@@ -10,8 +10,8 @@ from app.db.schemas import UserCreate, User as PyUser, PersonaCreate, Persona as
     Event as PyEvent, TagCreate, Tag as PyTag
 
 from sqlalchemy.orm import Session
-from app.llm.LlmRequest import LlmRequest
-from app.llm.llm import get_model, get_openai_model
+from app.llm.LlmRequest import LlmRequest, LlmModel
+from app.llm.llm import get_model
 
 Base.metadata.create_all(bind=database.engine)
 app = FastAPI(debug=config.IS_DEBUG)
@@ -89,11 +89,14 @@ def read_tag(tag_id: int, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="Tag not found")
     return db_tag
 
-
+@app.post("/llm_model")
+def llm(request: LlmModel):
+    os.environ['LLM_MODEL'] = request.llm_model
+    return {"message": f"the llm model setup to: {os.getenv('LLM_MODEL')}"}
 
 @app.post("/llm")
 def llm(request: LlmRequest):
     prompt = PromptTemplate.from_template(request.prompt)
-    chain = prompt | get_openai_model()
+    chain = prompt | get_model()
     result = chain.invoke({"event": request.event})
-    return {"message": result, "event": request.event, "prompt": request.prompt}
+    return {"message": result.content, "event": request.event, "prompt": request.prompt}

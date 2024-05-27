@@ -20,3 +20,6 @@ class LlmRequest(BaseModel):
             except FileNotFoundError:
                 raise ValueError("Text file not found")
         return values
+    
+class LlmModel(BaseModel):
+    llm_model: str

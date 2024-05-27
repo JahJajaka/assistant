@@ -19,6 +19,18 @@ services:
       - ./:/app
     command: poetry run uvicorn app.main:app --host 0.0.0.0 --port 80 --reload
 
+  telegram:
+    build:
+      context: ../assistant/telegram
+    env_file: 
+      - .env
+    #volumes:
+    #  - ./:/telegram
+    depends_on: 
+      - app           
+    container_name: telegram
+
+
   db:
     image: postgres:latest
     ports:
@@ -35,6 +47,6 @@ services:
 
   adminer:
     image: adminer
-    restart: always
+    #restart: always
     ports:
       - "8080:8080"
